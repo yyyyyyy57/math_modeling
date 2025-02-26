@@ -42,7 +42,7 @@ def move_func(s, t):
 
     dxdt6 = v_x6
     dv_xdt6 = k*q6*Q * x6 / (x6**2 + y6**2)**1.5 / m6
-    dydt6 = v_y5
+    dydt6 = v_y6
     dv_ydt6 = k*q6*Q * y6 / (x6**2 + y6**2)**1.5 / m6
     
     return (dxdt1, dv_xdt1, dydt1, dv_ydt1,
@@ -149,8 +149,8 @@ def animate(i):
     ball5.set_data([sol[i][16]], [sol[i][18]])
     ball_line5.set_data(sol[:i, 16], sol[:i, 18])
 
-    ball5.set_data([sol[i][20]], [sol[i][22]])
-    ball_line5.set_data(sol[:i, 20], sol[:i, 22])
+    ball6.set_data([sol[i][20]], [sol[i][22]])
+    ball_line6.set_data(sol[:i, 20], sol[:i, 22])
 
 ani = FuncAnimation(fig, animate, frames=frames, interval=30)
 

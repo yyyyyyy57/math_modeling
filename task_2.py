@@ -53,7 +53,7 @@ def move_func(s, t):
             dxdt6, dv_xdt6, dydt6, dv_ydt6)
 
 k = 9 * 10**9
-Q = 0.001
+Q = 0.009
 
 x01 = -30
 v_x01 = 20
@@ -87,7 +87,7 @@ x05 = -30
 v_x05 = 20
 y05 = 30
 v_y05 = -5
-q5 = -0.0001
+q5 = 0.0001
 m5 = 0.8
 
 x06 = -30
@@ -107,8 +107,8 @@ sol = odeint(move_func, s0, t)
 
 fig, ax = plt.subplots()
 	
-ball1, = plt.plot([], [], 'o', color='b')
-ball_line1, = plt.plot([], [], '-', color='b')
+ball1, = plt.plot([], [], 'o', color='r')
+ball_line1, = plt.plot([], [], '-', color='r')
 
 ball2, = plt.plot([], [], 'o', color='b')
 ball_line2, = plt.plot([], [], '-', color='b')
@@ -119,11 +119,11 @@ ball_line3, = plt.plot([], [], '-', color='b')
 ball4, = plt.plot([], [], 'o', color='b')
 ball_line4, = plt.plot([], [], '-', color='b')
 
-ball5, = plt.plot([], [], 'o', color='b')
-ball_line5, = plt.plot([], [], '-', color='b')
+ball5, = plt.plot([], [], 'o', color='r')
+ball_line5, = plt.plot([], [], '-', color='r')
 
-ball6, = plt.plot([], [], 'o', color='b')
-ball_line6, = plt.plot([], [], '-', color='b')
+ball6, = plt.plot([], [], 'o', color='r')
+ball_line6, = plt.plot([], [], '-', color='r')
 
 plt.plot([0], [0], 'o', color='y', ms=20)
 

@@ -12,15 +12,20 @@ area_b = 0.2
 solar_input = 3668
 sigma = 5.67032*10**(-8)
 R = 0.12                     # temperature insulation
-q = 2.06*10**9
-k = 17.5**(-2)
-temp_opt = 295.5
 
 frames = 100
 luminosity = np.linspace(0.65, 1.65, frames)
 
 def func(areas, luminosity):
+    global area_w
+    global area_b
+
     areas = area_w, area_b
+
+    if area_w <= 0:
+        area_w = 0.01
+    if area_b <= 0:
+        area_b = 0.01
 
     area_g = 1 - area_w - area_b
     albedo = area_w*albedo_w + area_b*albedo_b + area_g*albedo_g

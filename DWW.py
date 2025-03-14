@@ -3,53 +3,49 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-death_rate = 0.2
-albedo_g = 0.3
-albedo_w = 0.5
-albedo_b = 0.1
-alpha_w = 0.15
-alpha_b = 0.15
-S = 917
-sigma = 5.67*10**(-8)
+death_rate = 0.3
+albedo_g = 0.5
+albedo_w = 0.75
+albedo_b = 0.25
+area_w = 0.2
+area_b = 0.2
+solar_input = 3668
+sigma = 5.67032*10**(-8)
+R = 0.12                     # temperature insulation
 q = 2.06*10**9
 k = 17.5**(-2)
 temp_opt = 295.5
 
-frames = 500
-L = np.linspace(0.8, 1.2, frames)
+frames = 100
+luminosity = np.linspace(0.65, 1.65, frames)
 
-def func(smth, L):
-    alpha_w, alpha_b = smth
+def func(areas, luminosity):
+    areas = area_w, area_b
 
-    alpha_g = 1 - alpha_w - alpha_b                              
-    A = alpha_w*albedo_w + alpha_b*albedo_b + alpha_g*albedo_g  
+    area_g = 1 - area_w - area_b
+    albedo = area_w*albedo_w + area_b*albedo_b + area_g*albedo_g
 
-    temp = (S*L*(1-A)/sigma)
-    temp_w = (q*(A-albedo_w)+temp)**(1/4)
-    temp_b = (q*(A-albedo_b)+temp)**(1/4)
+    temp = (luminosity * solar_input / 4 / sigma * (1-albedo))**(1/4)
+    temp_w = (R * luminosity * solar_input / 4 / sigma * (albedo-albedo_w) + temp**4)**(1/4)
+    temp_b = (R * luminosity * solar_input / 4 / sigma * (albedo-albedo_b) + temp**4)**(1/4)
+    temp_g = (R * luminosity * solar_input / 4 / sigma * (albedo-albedo_g) + temp**4)**(1/4)
+    print(temp, temp_w, temp_b)
 
-    if np.abs(temp_w - temp_opt) < k**(-1/2):           
-        beta_T_w = 1 - k*(temp_w - temp_opt)**2         
-    else:
-        beta_T_w = 0
-    if np.abs(temp_b - temp_opt) < k**(-1/2):
-        beta_T_b = 1 - k*(temp_b - temp_opt)**2
-    else:
-        beta_T_b = 0                                    
+    birth_rate_w = 1 - 0.003265 * (temp_w - 295.5)**2
+    birth_rate_b = 1 - 0.003265 * (temp_b - 295.5)**2
 
+    darea_wdt = area_w * (birth_rate_w * area_g - death_rate)
+    darea_bdt = area_b * (birth_rate_b * area_g - death_rate)
 
-    dalpha_wdt = alpha_w * (alpha_g * beta_T_w - death_rate)   
-    dalpha_bdt = alpha_b * (alpha_g * beta_T_b - death_rate)   
+    return darea_wdt, darea_bdt
 
-    return dalpha_wdt, dalpha_bdt
+areas = area_w, area_b
+sol = odeint(func, areas, luminosity)
 
-smth0 = (alpha_w, alpha_b)
-sol = odeint(func, smth0, L)
-
-plt.plot(L, sol[:,0])
-plt.plot(L, sol[:,1])
-plt.plot(L, sol[:,1]+sol[:,0])
-plt.ylim(0, 0.7)
+plt.plot(luminosity, sol[:,0])
+plt.plot(luminosity, sol[:,1])
+#plt.plot(luminosity, sol[:,1]+sol[:,0])
+#plt.ylim(0, 0.7)
 plt.xlabel('Luminosity')
 plt.ylabel('Area fraction')
 plt.title('Population')

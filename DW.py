@@ -1,57 +1,89 @@
 import numpy as np
-from scipy.integrate import odeint
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 
-death_rate = 0.2
-albedo_g = 0.5
-albedo_w = 0.9
-albedo_b = 0.1
-alpha_w = 0.2
-alpha_b = 0.2
-S = 917
-sigma = 5.67*10**(-8)
-q = 2.06*10**9
-k = 17.5**(-2)
-temp_opt = 295.5
+temp_min = 278.15
+temp_max = 313.15
+temp_opt = 295.65
 
-frames = 500
-L = np.linspace(0.5, 1.5, frames)
+albedo_barren = 0.5
+albedo_white = 0.75
+albedo_black = 0.25
+area_white = 0.01
+area_black = 0.01
 
-def func(smth, L):
-    alpha_w, alpha_b = smth
+death_rate = 0.3
+S = 1000
+sigma = 5.67032e-8
+R = 0.12
 
-    alpha_g = 1 - alpha_w - alpha_b
-    A = alpha_w*albedo_w + alpha_b*albedo_b + alpha_g*albedo_g
+maxconv = 1000
+tol = 0.000001
 
-    temp = (S*L*(1-A)/sigma)
-    temp_w = (q*(A-albedo_w)+temp)**(1/4)
-    temp_b = (q*(A-albedo_b)+temp)**(1/4)
+if __name__ == '__main__':
 
-    if np.abs(temp_w - temp_opt) < k**(-1/2):
-        beta_T_w = 1 - k*(temp_w - temp_opt)**2
-    else:
-        beta_T_w = 0
-    if np.abs(temp_b - temp_opt) < k**(-1/2):
-        beta_T_b = 1 - k*(temp_b - temp_opt)**2
-    else:
-        beta_T_b = 0
+    luminosity = np.arange(0.5, 1.5, 0.001)
+    area_black_a = np.zeros_like(luminosity)
+    area_white_a = np.zeros_like(luminosity)
+    area_barren_a = np.zeros_like(luminosity)
+    temp_planet_a = np.zeros_like(luminosity)
+    
+    for j, lum in enumerate(luminosity):
 
-    dalpha_wdt = alpha_w * (alpha_g * beta_T_w - death_rate)
-    dalpha_bdt = alpha_b * (alpha_g * beta_T_b - death_rate)
+        if area_black < 0.01:
+            area_black = 0.01
+        if area_white < 0.01:
+            area_white = 0.01
+        area_barren = 1 - (area_black + area_white)
 
-    return dalpha_wdt, dalpha_bdt
+        it = 0
+        darea_black = 2*tol
+        darea_white = 2*tol
+        darea_black_old = 0
+        darea_white_old = 0
 
-smth0 = (alpha_w, alpha_b)
-sol = odeint(func, smth0, L)
+        while it <= maxconv and darea_black > tol and darea_white > tol:
 
-plt.plot(L, sol[:,0])
-plt.plot(L, sol[:,1])
-plt.plot(L, sol[:,1]+sol[:,0])
-plt.ylim(0, 0.7)
-plt.xlabel('Luminosity')
-plt.ylabel('Area fraction')
-plt.title('Population')
-plt.savefig('DW.png')
+            albedo_planet = (area_black * albedo_black + area_white * albedo_white + area_barren * albedo_barren)
+            temp_planet = (lum*S*(1-albedo_planet)/sigma)**(0.25)
+            temp_black = (R*lum*S/sigma*(albedo_planet-albedo_black) + temp_planet**4)**(0.25)
+            temp_white = (R*lum*S/sigma*(albedo_planet-albedo_white) + temp_planet**4)**(0.25)
 
-print(sol)
+            if (temp_black >= temp_min and temp_black <= temp_max and area_black >= 0.01):
+                birth_black = 1 - 0.003265*(temp_opt-temp_black)**2
+            else:
+                birth_black = 0
+            if (temp_white >= temp_min and temp_white <= temp_max and area_white >= 0.01):
+                birth_white = 1 - 0.003265*(temp_opt-temp_white)**2
+            else:
+                birth_white = 0.0
+
+            darea_black_new = area_black*(birth_black*area_barren-death_rate)
+            darea_white_new = area_white*(birth_white*area_barren-death_rate)
+
+            darea_black = abs(darea_black_new-darea_black_old)
+            darea_white = abs(darea_white_new-darea_white_old)
+
+            # Update areas, states, and iteration count
+            darea_black_old = darea_black_new
+            darea_white_old = darea_white_new
+            area_black = area_black+darea_black_new
+            area_white = area_white+darea_white_new
+            area_barren = 1-(area_black+area_white)
+            it += 1
+
+        area_black_a[j] = area_black
+        area_white_a[j] = area_white
+        area_barren_a[j] = area_barren
+        temp_planet_a[j] = temp_planet
+
+    fig, ax = plt.subplots(2, 1)
+    ax[0].plot(luminosity, 100*area_black_a, color='black')
+    ax[0].plot(luminosity, 100*area_white_a, color='red')
+    ax[0].set_xlabel('solar luminosity')
+    ax[0].set_ylabel('area (%)')
+    plt.legend()
+
+    ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
+    ax[1].set_xlabel('solar luminosity')
+    ax[1].set_ylabel('global temperature (°C)')
+    plt.savefig('DW.png')

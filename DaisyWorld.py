@@ -38,11 +38,11 @@ if __name__ == '__main__':
         temp_black = (R*lum*S/sigma*(albedo_planet-albedo_black) + temp_planet**4)**(0.25)
         temp_white = (R*lum*S/sigma*(albedo_planet-albedo_white) + temp_planet**4)**(0.25)
 
-        if (temp_black >= temp_min and temp_black <= temp_max and area_black >= 0.01):
+        if (temp_black >= temp_min and temp_black <= temp_max):
            birth_black = 1 - 0.003265*(temp_opt-temp_black)**2
         else:
             birth_black = 0
-        if (temp_white >= temp_min and temp_white <= temp_max and area_white >= 0.01):
+        if (temp_white >= temp_min and temp_white <= temp_max):
             birth_white = 1 - 0.003265*(temp_opt-temp_white)**2
         else:
             birth_white = 0.0
@@ -67,9 +67,9 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(2, 1)
     ax[0].plot(luminosity, 100*area_black_a, color='black')
     ax[0].plot(luminosity, 100*area_white_a, color='red')
-    ax[0].set_ylabel('area (%)')
+    ax[0].set_ylabel('Area (%)')
 
     ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
-    ax[1].set_xlabel('solar luminosity')
-    ax[1].set_ylabel('global temperature (°C)')
+    ax[1].set_xlabel('Solar luminosity')
+    ax[1].set_ylabel('Global temperature (°C)')
     plt.savefig('DaisyWorld.png')

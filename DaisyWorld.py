@@ -16,10 +16,9 @@ R = 0.12
 
 if __name__ == '__main__':
 
-    luminosity = np.arange(0.5, 1.6, 0.001)
+    luminosity = np.arange(0.5, 1.6, 0.0001)
     area_black_a = np.zeros_like(luminosity)
     area_white_a = np.zeros_like(luminosity)
-    area_barren_a = np.zeros_like(luminosity)
     temp_planet_a = np.zeros_like(luminosity)
     
     for j, lum in enumerate(luminosity):
@@ -30,8 +29,8 @@ if __name__ == '__main__':
             area_white = 0.01
         area_barren = 1 - (area_black + area_white)
 
-        darea_black_old = 0
-        darea_white_old = 0
+        darea_black = 0
+        darea_white = 0
 
         albedo_planet = (area_black * albedo_black + area_white * albedo_white + area_barren * albedo_barren)
         temp_planet = (lum*S*(1-albedo_planet)/sigma)**(0.25)
@@ -47,21 +46,14 @@ if __name__ == '__main__':
         else:
             birth_white = 0.0
 
-        darea_black_new = area_black*(birth_black*area_barren-death_rate)
-        darea_white_new = area_white*(birth_white*area_barren-death_rate)
+        darea_black = area_black*(birth_black*area_barren-death_rate)
+        darea_white = area_white*(birth_white*area_barren-death_rate)
 
-        darea_black = abs(darea_black_new-darea_black_old)
-        darea_white = abs(darea_white_new-darea_white_old)
-
-        darea_black_old = darea_black_new
-        darea_white_old = darea_white_new
-        area_black = area_black+darea_black_new
-        area_white = area_white+darea_white_new
-        area_barren = 1-(area_black+area_white)
+        area_black += darea_black
+        area_white += darea_white
 
         area_black_a[j] = area_black
         area_white_a[j] = area_white
-        area_barren_a[j] = area_barren
         temp_planet_a[j] = temp_planet
 
     fig, ax = plt.subplots(2, 1)

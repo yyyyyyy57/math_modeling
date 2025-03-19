@@ -29,9 +29,6 @@ if __name__ == '__main__':
             area_white = 0.01
         area_barren = 1 - (area_black + area_white)
 
-        darea_black = 0
-        darea_white = 0
-
         albedo_planet = (area_black * albedo_black + area_white * albedo_white + area_barren * albedo_barren)
         temp_planet = (lum*S*(1-albedo_planet)/sigma)**(0.25)
         temp_black = (R*lum*S/sigma*(albedo_planet-albedo_black) + temp_planet**4)**(0.25)
@@ -46,11 +43,8 @@ if __name__ == '__main__':
         else:
             birth_white = 0.0
 
-        darea_black = area_black*(birth_black*area_barren-death_rate)
-        darea_white = area_white*(birth_white*area_barren-death_rate)
-
-        area_black += darea_black
-        area_white += darea_white
+        area_black += area_black*(birth_black*area_barren-death_rate)
+        area_white += area_white*(birth_white*area_barren-death_rate)
 
         area_black_a[j] = area_black
         area_white_a[j] = area_white

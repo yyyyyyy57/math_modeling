@@ -14,6 +14,21 @@ S = 1000
 sigma = 5.67032e-8
 insul = 0.12
 
+R_1 = 0.42 * 6.957*10**8            # глизе 667 Сс
+T_1 = 3700
+a_1 = 0.12 * 149597870700
+
+R_2 = 0.1967 * 6.957*10**8            # росс 128 b
+T_2 = 3306
+a_2 = 0.0496 * 149597870700
+
+def find_s(R, T, a):
+    S = R**2 * sigma * T**4 / a**2
+    return S
+
+S = find_s(R_2, T_2, a_2)
+
+
 if __name__ == '__main__':
 
     luminosity = np.arange(0.5, 1.6, 0.0001)
@@ -30,9 +45,9 @@ if __name__ == '__main__':
         area_barren = 1 - (area_black + area_white)
 
         albedo_planet = (area_black * albedo_black + area_white * albedo_white + area_barren * albedo_barren)
-        temp_planet = (lum*S*(1-albedo_planet)/sigma)**(0.25)
-        temp_black = (insul*lum*S/sigma*(albedo_planet-albedo_black) + temp_planet**4)**(0.25)
-        temp_white = (insul*lum*S/sigma*(albedo_planet-albedo_white) + temp_planet**4)**(0.25)
+        temp_planet = (lum*S*(1-albedo_planet)/sigma/4)**(0.25)
+        temp_black = (insul*lum*S/sigma/4*(albedo_planet-albedo_black) + temp_planet**4)**(0.25)
+        temp_white = (insul*lum*S/sigma/4*(albedo_planet-albedo_white) + temp_planet**4)**(0.25)
 
         if (temp_black >= temp_min and temp_black <= temp_max):
            birth_black = 1 - 0.003265*(temp_opt-temp_black)**2
@@ -58,4 +73,4 @@ if __name__ == '__main__':
     ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
     ax[1].set_xlabel('Solar luminosity')
     ax[1].set_ylabel('Global temperature (°C)')
-    plt.savefig('DaisyWorld.png')
+    plt.savefig('DW_2.png')

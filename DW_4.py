@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 temp_min = 278.15
 temp_max = 313.15
 temp_opt = 295.65
+
 albedo_barren = 0.5
 albedo_white = 0.8
 albedo_black = 0.2
 albedo_3 = 0.4
 albedo_4 = 0.6
+
 area_white = 0.01
 area_black = 0.01
 area_3 = 0.01

@@ -6,8 +6,8 @@ temp_max = 313.15
 temp_opt = 295.65
 
 albedo_barren = 0.5
-albedo_white = 0.8
-albedo_black = 0.2
+albedo_white = 0.75
+albedo_black = 0.25
 albedo_3 = 0.4
 albedo_4 = 0.6
 
@@ -22,7 +22,7 @@ insul = 0.12
 
 if __name__ == '__main__':
 
-    luminosity = np.arange(0.5, 1.7, 0.0001)
+    luminosity = np.arange(0.5, 1.6, 0.0001)
     area_black_a = np.zeros_like(luminosity)
     area_white_a = np.zeros_like(luminosity)
     area_3_a = np.zeros_like(luminosity)
@@ -85,9 +85,9 @@ if __name__ == '__main__':
     ax[0].plot(luminosity, 100*area_white_a, color='red')
     ax[0].plot(luminosity, 100*area_3_a, color='green')
     ax[0].plot(luminosity, 100*area_4_a, color='blue')
-    ax[0].set_ylabel('Area (%)')
+    ax[0].set_ylabel('Площадь (%)')
 
     ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
-    ax[1].set_xlabel('Solar luminosity')
-    ax[1].set_ylabel('Global temperature (°C)')
-    plt.savefig('DW_4.png')
+    ax[1].set_xlabel('Светимость звезды')
+    ax[1].set_ylabel('Температура планеты (°C)')
+    plt.savefig('DW_44.png')

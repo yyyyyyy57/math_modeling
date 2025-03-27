@@ -68,9 +68,9 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(2, 1)
     ax[0].plot(luminosity, 100*area_black_a, color='black')
     ax[0].plot(luminosity, 100*area_white_a, color='red')
-    ax[0].set_ylabel('Area (%)')
+    ax[0].set_ylabel('Площадь (%)')
 
     ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
-    ax[1].set_xlabel('Solar luminosity')
-    ax[1].set_ylabel('Global temperature (°C)')
-    plt.savefig('DW.png')
+    ax[1].set_xlabel('Светимость звезды')
+    ax[1].set_ylabel('Температура планеты (°C)')
+    plt.savefig('DW_ross128b.png')

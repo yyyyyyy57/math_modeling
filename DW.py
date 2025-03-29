@@ -26,7 +26,7 @@ def find_s(R, T, a):
     S = R**2 * sigma * T**4 / a**2
     return S
 
-S = find_s(R_2, T_2, a_2)
+S = find_s(R_1, T_1, a_1)
 
 
 if __name__ == '__main__':
@@ -73,4 +73,4 @@ if __name__ == '__main__':
     ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
     ax[1].set_xlabel('Светимость звезды')
     ax[1].set_ylabel('Температура планеты (°C)')
-    plt.savefig('DW_ross128b.png')
+    plt.savefig('DW_gliese667cc.png')

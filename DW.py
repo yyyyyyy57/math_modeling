@@ -10,7 +10,6 @@ albedo_black = 0.25
 area_white = 0.01
 area_black = 0.01
 death_rate = 0.3
-S = 1000
 sigma = 5.67032e-8
 insul = 0.12
 
@@ -22,12 +21,15 @@ R_2 = 0.1967 * 6.957*10**8            # росс 128 b
 T_2 = 3306
 a_2 = 0.0496 * 149597870700
 
+R_3 = 0.533 * 6.957*10**8            # HD 85512 b
+T_3 = 4715
+a_3 = 0.26 * 149597870700
+
 def find_s(R, T, a):
     S = R**2 * sigma * T**4 / a**2
     return S
 
-S = find_s(R_1, T_1, a_1)
-
+S = find_s(R_3, T_3, a_3)
 
 if __name__ == '__main__':
 
@@ -73,4 +75,4 @@ if __name__ == '__main__':
     ax[1].plot(luminosity, temp_planet_a-273.15, color='black')
     ax[1].set_xlabel('Светимость звезды')
     ax[1].set_ylabel('Температура планеты (°C)')
-    plt.savefig('DW_gliese667cc.png')
+    plt.savefig('DW_HD85512b.png')
